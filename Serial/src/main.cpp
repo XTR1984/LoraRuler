@@ -4,8 +4,8 @@
 
 //#define _DEBUG_
 
-#define FW_VERSION                                  "0.0.1"
-#define SK_NAME                                     "lrrl"
+#define FW_VERSION                                  "3.1.0"
+#define SK_NAME                                     "mbed"
 
 #define SK_RESET                                0x00
 #define SK_GET_VERSION                          0x01
@@ -23,7 +23,7 @@ int RC = 0, oldRC=0;
 int lastAddrRead=0;
 uint8_t lastReq;
 uint8_t requestBuffer[64];
-
+  
 typedef struct sHidCommand
 {
     uint8_t Cmd;
@@ -86,7 +86,7 @@ void CmdProcess(void)
     DecodeCommand(requestBuffer, &cmd);
     
     switch (cmd.Cmd) {
-        case DEVICE_RESET:
+        case DEVICE_RESET:  
             SX127x_reset();
             break;
         case SK_RESET:
@@ -115,7 +115,7 @@ void CmdProcess(void)
             break;
         case SK_GET_PINS:
             dataBuffer[0] = 0;
-            if (digitalRead(SX127x_IRQ)==HIGH)
+            if (digitalRead(SX127x_DIO0)==HIGH)
                 dataBuffer[0] |= 0x01;
 ///            if (radio.dio1)
 ///                dataBuffer[0] |= 0x02;
@@ -188,13 +188,13 @@ void CmdProcess(void)
     EncodeCommandAns( cmd.Cmd, stat, size, dataBuffer);
 }
 
-#define LED 15 
+
 
 void setup() {
   Serial.begin(115200);
   pinMode(LED, OUTPUT);    
-  pinMode(SX127x_IRQ, INPUT);    
-  //Serial.setTimeout(10);
+  pinMode(SX127x_DIO0, INPUT);    
+  Serial.setTimeout(1);
   //delay(3000);
   //Serial.print("Cpu freq:");
   //Serial.println(getCpuFrequencyMhz());
